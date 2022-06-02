@@ -5,6 +5,6 @@ type SocialMedia struct {
 	Name           string `gorm:"type:varchar(255);not null" json:"name"`
 	SocialMediaURL string `gorm:"type:varchar(255);not null" json:"social_media_url"`
 
-	// SocialMedia Has One User
+	// SocialMedia belongs to a user	
 	UserID uint `gorm:"type:int;not null;" json:"user_id"`
 }

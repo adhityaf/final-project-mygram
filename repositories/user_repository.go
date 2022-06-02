@@ -9,6 +9,8 @@ import (
 type UserRepo interface {
 	FindAll() (*[]models.User, error)
 	FindById(id uint) (*models.User, error)
+	FindByEmail(email string) (*models.User, error)
+	FindByUsername(username string) (*models.User, error)
 	Create(user *models.User) (*models.User, error)
 	Update(user *models.User) (*models.User, error)
 	Delete(user *models.User) (*models.User, error)
@@ -33,6 +35,18 @@ func (u *userRepo) FindAll() (*[]models.User, error) {
 func (u *userRepo) FindById(id uint) (*models.User, error) {
 	var user models.User
 	err := u.db.First(&user, id).Error
+	return &user, err
+}
+
+func(u *userRepo) FindByEmail(email string)(*models.User, error){
+	var user models.User
+	err := u.db.Where("email=?", email).Take(&user).Error
+	return &user, err
+}
+
+func(u *userRepo) FindByUsername(username string)(*models.User, error){
+	var user models.User
+	err := u.db.Where("username=?", username).Take(&user).Error
 	return &user, err
 }
 

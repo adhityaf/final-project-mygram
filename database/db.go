@@ -16,7 +16,7 @@ import (
 // 	DB_PORT  = "5432"
 // 	DB_USER  = "pgadmin"
 // 	DB_PASS  = "pgadmin"
-// 	DB_NAME  = "db-assign2"
+// 	DB_NAME  = "db-mygram"
 // 	APP_PORT = ":8080"
 // )
 
@@ -26,7 +26,7 @@ const (
 	DB_PORT  = "3306"
 	DB_USER  = "root"
 	DB_PASS  = ""
-	DB_NAME  = "db-assign2"
+	DB_NAME  = "db-mygram"
 	TIMEOUT  = "10s"
 	APP_PORT = ":8888"
 )
