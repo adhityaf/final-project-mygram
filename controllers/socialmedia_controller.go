@@ -4,7 +4,6 @@ import (
 	"final-project/helpers"
 	"final-project/params"
 	"final-project/services"
-	"net/http"
 	"strconv"
 
 	"github.com/asaskevich/govalidator"
@@ -23,15 +22,12 @@ func NewSocialMediaController(service *services.SocialMediaService) *SocialMedia
 
 func (s *SocialMediaController) CreateSocialMedia(ctx *gin.Context) {
 	var request params.CreateSocialMedia
-
 	err := ctx.ShouldBindJSON(&request)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, params.Response{
-			Status: http.StatusBadRequest,
-			Error:  "BAD REQUEST",
-		})
+		helpers.ResponseStatusBadRequest(ctx, "BAD REQUEST")
 		return
 	}
+	
 	AuthId := ctx.MustGet("id").(float64)
 
 	request.UserID = uint(AuthId)
@@ -48,7 +44,7 @@ func (s *SocialMediaController) CreateSocialMedia(ctx *gin.Context) {
 
 func (s *SocialMediaController) GetSocialMedias(ctx *gin.Context) {
 	AuthId := ctx.MustGet("id").(float64)
-	response := s.socialMediaService.FindAll(uint(AuthId))
+	response := s.socialMediaService.FindAllByAuthId(uint(AuthId))
 	ctx.JSON(response.Status, response)
 }
 
@@ -57,19 +53,14 @@ func (s *SocialMediaController) UpdateSocialMedia(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&request)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, params.Response{
-			Status: http.StatusBadRequest,
-			Error:  "BAD REQUEST",
-		})
+		helpers.ResponseStatusBadRequest(ctx, "BAD REQUEST")
+		return
 	}
 
 	socialMediaIdString := ctx.Param("socialMediaId")
 	id, err := strconv.Atoi(socialMediaIdString)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, params.Response{
-			Status: http.StatusBadRequest,
-			Error:  "BAD REQUEST",
-		})
+		helpers.ResponseStatusBadRequest(ctx, "BAD REQUEST")
 		return
 	}
 
@@ -77,6 +68,12 @@ func (s *SocialMediaController) UpdateSocialMedia(ctx *gin.Context) {
 
 	request.ID = uint(id)
 	request.UserID = uint(AuthId)
+
+	_, err = govalidator.ValidateStruct(&request)
+	if err != nil {
+		helpers.ResponseStatusBadRequestErrorValidation(ctx, err.Error())
+		return
+	}
 
 	response := s.socialMediaService.Update(request)
 	ctx.JSON(response.Status, response)

@@ -9,6 +9,7 @@ import (
 type PhotoRepo interface {
 	FindAll() (*[]models.Photo, error)
 	FindById(id uint) (*models.Photo, error)
+	FindByIdAndAuthId(id, authId uint) (*models.Photo, error)
 	Create(photo *models.Photo) (*models.Photo, error)
 	Update(photo *models.Photo) (*models.Photo, error)
 	Delete(photo *models.Photo) (*models.Photo, error)
@@ -33,6 +34,12 @@ func (p *photoRepo) FindAll() (*[]models.Photo, error) {
 func (p *photoRepo) FindById(id uint) (*models.Photo, error) {
 	var photo models.Photo
 	err := p.db.First(&photo, id).Error
+	return &photo, err
+
+}
+func (p *photoRepo) FindByIdAndAuthId(id, authId uint) (*models.Photo, error) {
+	var photo models.Photo
+	err := p.db.Where("user_id=?", authId).First(&photo, id).Error
 	return &photo, err
 }
 

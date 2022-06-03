@@ -7,7 +7,6 @@ import (
 )
 
 type UserRepo interface {
-	FindAll() (*[]models.User, error)
 	FindById(id uint) (*models.User, error)
 	FindByEmail(email string) (*models.User, error)
 	FindByUsername(username string) (*models.User, error)
@@ -24,12 +23,6 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 	return &userRepo{
 		db: db,
 	}
-}
-
-func (u *userRepo) FindAll() (*[]models.User, error) {
-	var users []models.User
-	err := u.db.Find(&users).Error
-	return &users, err
 }
 
 func (u *userRepo) FindById(id uint) (*models.User, error) {

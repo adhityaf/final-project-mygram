@@ -37,12 +37,18 @@ func (s *SocialMediaService) Create(request *params.CreateSocialMedia) *params.R
 	return &params.Response{
 		Status:  http.StatusCreated,
 		Message: "Success create new social media",
-		Payload: socialMedia,
+		SocialMediaResponse: params.SocialMediaResponse{
+			ID:             socialMedia.ID,
+			Name:           socialMedia.Name,
+			SocialMediaURL: socialMedia.SocialMediaURL,
+			UserID:         socialMedia.UserID,
+			CreatedAt:      socialMedia.CreatedAt,
+		},
 	}
 }
 
-func (s *SocialMediaService) FindAll(authId uint) *params.Response {
-	socialMedias, err := s.socialMediaRepo.FindAll(authId)
+func (s *SocialMediaService) FindAllByAuthId(authId uint) *params.Response {
+	socialMedias, err := s.socialMediaRepo.FindAllByAuthId(authId)
 	if err != nil {
 		return &params.Response{
 			Status:         http.StatusBadRequest,
@@ -51,10 +57,34 @@ func (s *SocialMediaService) FindAll(authId uint) *params.Response {
 		}
 	}
 
+	if len(*socialMedias) == 0 {
+		return &params.Response{
+			Status: http.StatusNotFound,
+			Error:  "Data is Empty",
+		}
+	}
+
+	var socialMediaResponses []params.SocialMediaResponse
+	for _, socialMedia := range *socialMedias {
+		socialMediaResponses = append(socialMediaResponses, params.SocialMediaResponse{
+			ID:             socialMedia.ID,
+			Name:           socialMedia.Name,
+			SocialMediaURL: socialMedia.SocialMediaURL,
+			UserID:         socialMedia.UserID,
+			CreatedAt:      socialMedia.CreatedAt,
+			UpdatedAt:      socialMedia.UpdatedAt,
+			User: params.UserResponse{
+				ID:       int(socialMedia.User.ID),
+				Username: socialMedia.User.Username,
+				Email:    socialMedia.User.Email,
+			},
+		})
+	}
+
 	return &params.Response{
-		Status:  http.StatusOK,
-		Message: "Success retrieve all data",
-		Payload: socialMedias,
+		Status:              http.StatusOK,
+		Message:             "Success retrieve all data",
+		SocialMediaResponse: socialMediaResponses,
 	}
 }
 
@@ -83,7 +113,13 @@ func (s *SocialMediaService) Update(request params.UpdateSocialMedia) *params.Re
 	return &params.Response{
 		Status:  http.StatusOK,
 		Message: fmt.Sprintf("Update data social media with id %d success", request.ID),
-		Payload: socialMedia,
+		SocialMediaResponse: params.SocialMediaResponse{
+			ID:             socialMedia.ID,
+			Name:           socialMedia.Name,
+			SocialMediaURL: socialMedia.SocialMediaURL,
+			UserID:         socialMedia.UserID,
+			UpdatedAt:      socialMedia.UpdatedAt,
+		},
 	}
 }
 

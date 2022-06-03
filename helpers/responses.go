@@ -15,6 +15,13 @@ func ResponseStatusUnauthorized(ctx *gin.Context, additionalInfo string) {
 	})
 }
 
+func ResponseStatusNotFound(ctx *gin.Context) {
+	ctx.AbortWithStatusJSON(http.StatusNotFound, params.Response{
+		Status:         http.StatusNotFound,
+		Error:          "DATA NOT FOUND",
+	})
+}
+
 func ResponseStatusBadRequest(ctx *gin.Context, additionalInfo string) {
 	ctx.AbortWithStatusJSON(http.StatusBadRequest, params.Response{
 		Status: http.StatusBadRequest,

@@ -29,8 +29,6 @@ func Auth() gin.HandlerFunc {
 
 		var data = claims.(jwt.MapClaims)
 		ctx.Set("id", data["id"])
-		ctx.Set("age", data["age"])
-		ctx.Set("username", data["username"])
 		ctx.Set("email", data["email"])
 		ctx.Next()
 	}

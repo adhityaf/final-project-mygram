@@ -8,12 +8,10 @@ import (
 
 const SECRET_KEY = "secret"
 
-func GenerateToken(id, age uint, email, username string) string {
+func GenerateToken(id uint, email string) string {
 	claims := jwt.MapClaims{
 		"id":    id,
-		"age": age,
 		"email": email,
-		"username": username,
 	}
 
 	parseToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

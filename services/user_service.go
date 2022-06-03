@@ -23,7 +23,7 @@ func (u *UserService) Create(request *params.RegisterUser) *params.Response {
 		// if user found
 		return &params.Response{
 			Status: http.StatusBadRequest,
-			Error:  "Email already registered",
+			Error:  "EMAIL ALREADY REGISTERED",
 		}
 	}
 
@@ -32,7 +32,7 @@ func (u *UserService) Create(request *params.RegisterUser) *params.Response {
 		// if user found
 		return &params.Response{
 			Status: http.StatusBadRequest,
-			Error:  "Username must be unique",
+			Error:  "USERNAME MUST BE UNIQUE",
 		}
 	}
 
@@ -49,32 +49,20 @@ func (u *UserService) Create(request *params.RegisterUser) *params.Response {
 	if err != nil {
 		return &params.Response{
 			Status:         http.StatusBadRequest,
-			Error:          "Bad Request",
+			Error:          "BAD REQUEST",
 			AdditionalInfo: err.Error(),
 		}
 	}
 
 	return &params.Response{
-		Status:  http.StatusOK,
-		Message: "Success register user",
-		Payload: user,
-	}
-}
-
-func (u *UserService) FindAll() *params.Response {
-	users, err := u.userRepo.FindAll()
-	if err != nil {
-		return &params.Response{
-			Status:         http.StatusBadRequest,
-			Error:          "Bad Request",
-			AdditionalInfo: err.Error(),
-		}
-	}
-
-	return &params.Response{
-		Status:  http.StatusOK,
-		Message: "Success retrieve users all data",
-		Payload: users,
+		Status:  http.StatusCreated,
+		Message: "Register success",
+		UserResponse: params.UserResponse{
+			Age:      user.Age,
+			Email:    user.Email,
+			ID:       int(user.ID),
+			Username: user.Username,
+		},
 	}
 }
 
@@ -83,7 +71,8 @@ func (u *UserService) Login(request *params.LoginUser) *params.Response {
 	if err != nil {
 		return &params.Response{
 			Status: http.StatusBadRequest,
-			Error:  "Email not registered yet, please register first",
+			Error:  "EMAIL NOT REGISTERED",
+			AdditionalInfo: err.Error(),
 		}
 	}
 
@@ -91,18 +80,19 @@ func (u *UserService) Login(request *params.LoginUser) *params.Response {
 	if !isOk {
 		return &params.Response{
 			Status: http.StatusBadRequest,
-			Error:  "Invalid email / password",
+			Error:  "CREDENTIAL NOT MATCH",
 		}
 	}
 
-	token := helpers.GenerateToken(user.ID, uint(user.Age), user.Email, user.Username)
+	token := helpers.GenerateToken(user.ID, user.Email)
 
 	// if user found
 	return &params.Response{
 		Status:  http.StatusOK,
-		Message: "Success login",
-		Payload: user,
-		Token:   token,
+		Message: "Login Success",
+		UserResponse: params.UserResponse{
+			Token: token,
+		},
 	}
 }
 
@@ -111,7 +101,7 @@ func (u *UserService) Update(request *params.UpdateUser) *params.Response {
 	if err != nil {
 		return &params.Response{
 			Status:         http.StatusNotFound,
-			Error:          "User Not Found",
+			Error:          "USER NOT FOUND",
 			AdditionalInfo: err.Error(),
 		}
 	}
@@ -123,15 +113,21 @@ func (u *UserService) Update(request *params.UpdateUser) *params.Response {
 	if err != nil {
 		return &params.Response{
 			Status:         http.StatusBadRequest,
-			Error:          "Bad Request",
+			Error:          "BAD REQUEST",
 			AdditionalInfo: err.Error(),
 		}
 	}
 
 	return &params.Response{
 		Status:  http.StatusOK,
-		Message: "Success update user",
-		Payload: user,
+		Message: "Your account has been successfully updated",
+		UserResponse: params.UserResponse{
+			ID:        int(user.ID),
+			Email:     user.Email,
+			Username:  user.Username,
+			Age:       user.Age,
+			UpdatedAt: user.UpdatedAt,
+		},
 	}
 }
 
@@ -140,7 +136,7 @@ func (u *UserService) Delete(id uint) *params.Response {
 	if err != nil {
 		return &params.Response{
 			Status:         http.StatusNotFound,
-			Error:          "User Not Found",
+			Error:          "USER NOT FOUND",
 			AdditionalInfo: err.Error(),
 		}
 	}
@@ -149,7 +145,7 @@ func (u *UserService) Delete(id uint) *params.Response {
 	if err != nil {
 		return &params.Response{
 			Status:         http.StatusBadRequest,
-			Error:          "Bad Request",
+			Error:          "BAD REQUEST",
 			AdditionalInfo: err.Error(),
 		}
 	}

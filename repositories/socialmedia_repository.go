@@ -7,7 +7,7 @@ import (
 )
 
 type SocialMediaRepo interface {
-	FindAll(authId uint) (*[]models.SocialMedia, error)
+	FindAllByAuthId(authId uint) (*[]models.SocialMedia, error)
 	FindByIdAndAuthId(socialMediaId, authId uint) (*models.SocialMedia, error)
 	Create(socialMedia *models.SocialMedia) (*models.SocialMedia, error)
 	Update(socialMedia *models.SocialMedia) (*models.SocialMedia, error)
@@ -24,9 +24,9 @@ func NewSocialMediaRepo(db *gorm.DB) SocialMediaRepo {
 	}
 }
 
-func (s *socialMediaRepo) FindAll(authId uint) (*[]models.SocialMedia, error) {
+func (s *socialMediaRepo) FindAllByAuthId(authId uint) (*[]models.SocialMedia, error) {
 	var socialMedia []models.SocialMedia
-	err := s.db.Where("user_id=?",authId).Find(&socialMedia).Error
+	err := s.db.Preload("User").Where("user_id=?",authId).Find(&socialMedia).Error
 	return &socialMedia, err
 }
 

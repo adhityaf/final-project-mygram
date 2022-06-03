@@ -23,6 +23,14 @@ func main() {
 	userService := services.NewUserService(userRepo)
 	userController := controllers.NewUserController(userService)
 
+	photoRepo := repositories.NewPhotoRepo(db)
+	photoService := services.NewPhotoService(photoRepo)
+	photoController := controllers.NewPhotoController(photoService)
+
+	commentRepo := repositories.NewCommentRepo(db)
+	commentService := services.NewCommentService(commentRepo)
+	commentController := controllers.NewCommentController(commentService, photoService)
+	
 	socialMediaRepo := repositories.NewSocialMediaRepo(db)
 	socialMediaService := services.NewSocialMediaService(socialMediaRepo)
 	socialMediaController := controllers.NewSocialMediaController(socialMediaService)
@@ -35,21 +43,29 @@ func main() {
 		userRoute.POST("/login", userController.Login)
 
 		userRoute.Use(middleware.Auth())
-		userRoute.PATCH("/:userId", userController.UpdateUser)
+		userRoute.PUT("/:userId", userController.UpdateUser)
 		userRoute.DELETE("/:userId", userController.DeleteUser)
 	}
 
 	// Photo
-	// route.POST("/photos", CreatePhoto)
-	// route.GET("/photos", GetPhotos)
-	// route.PATCH("/photos/:photoId", UpdatePhoto)
-	// route.DELETE("/photos/:photoId", DeletePhoto)
+	photoRoute := route.Group("/photos")
+	{
+		photoRoute.Use(middleware.Auth())
+		photoRoute.POST("", photoController.CreatePhoto)
+		photoRoute.GET("", photoController.GetPhotos)
+		photoRoute.PUT("/:photoId", photoController.UpdatePhoto)
+		photoRoute.DELETE("/:photoId", photoController.DeletePhoto)
+	}
 
 	// Comment
-	// route.POST("/comments", CreateComment)
-	// route.GET("/comments", GetComments)
-	// route.PATCH("/comments/:commentId", UpdateComment)
-	// route.DELETE("/comments/:commentId", DeleteComment)
+	commentRoute := route.Group("/comments")
+	{
+		commentRoute.Use(middleware.Auth())
+		commentRoute.POST("", commentController.CreateComment)
+		commentRoute.GET("", commentController.GetComments)
+		commentRoute.PUT("/:commentId", commentController.UpdateComment)
+		commentRoute.DELETE("/:commentId", commentController.DeleteComment)
+	}
 
 	// Social Media
 	socialMediaRoute := route.Group("/socialmedias")
@@ -57,7 +73,7 @@ func main() {
 		socialMediaRoute.Use(middleware.Auth())
 		socialMediaRoute.POST("", socialMediaController.CreateSocialMedia)
 		socialMediaRoute.GET("", socialMediaController.GetSocialMedias)
-		socialMediaRoute.PATCH("/:socialMediaId", socialMediaController.UpdateSocialMedia)
+		socialMediaRoute.PUT("/:socialMediaId", socialMediaController.UpdateSocialMedia)
 		socialMediaRoute.DELETE("/:socialMediaId", socialMediaController.DeleteSocialMedia)
 	}
 
