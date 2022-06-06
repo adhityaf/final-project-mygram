@@ -2,11 +2,10 @@ package helpers
 
 import (
 	"errors"
+	"final-project/database"
 
 	"github.com/dgrijalva/jwt-go"
 )
-
-const SECRET_KEY = "secret"
 
 func GenerateToken(id uint, email string) string {
 	claims := jwt.MapClaims{
@@ -16,7 +15,7 @@ func GenerateToken(id uint, email string) string {
 
 	parseToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signedToken, _ := parseToken.SignedString([]byte(SECRET_KEY))
+	signedToken, _ := parseToken.SignedString([]byte(database.GoDotEnvVariable("SECRET_KEY")))
 
 	return signedToken
 }
@@ -28,7 +27,7 @@ func VerifyToken(tokenStr string) (interface{}, error) {
 			return nil, errResponse
 		}
 
-		return []byte(SECRET_KEY), nil
+		return []byte(database.GoDotEnvVariable("SECRET_KEY")), nil
 	})
 
 	if err != nil {

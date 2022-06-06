@@ -58,7 +58,7 @@ func (u *UserService) Create(request *params.RegisterUser) *params.Response {
 		Status:  http.StatusCreated,
 		Message: "Register success",
 		Data: params.UserResponse{
-			Age:      int(user.Age),
+			Age:      user.Age,
 			Email:    user.Email,
 			ID:       int(user.ID),
 			Username: user.Username,
@@ -125,7 +125,7 @@ func (u *UserService) Update(request *params.UpdateUser) *params.Response {
 			ID:        int(user.ID),
 			Email:     user.Email,
 			Username:  user.Username,
-			Age:       int(user.Age),
+			Age:       user.Age,
 			UpdatedAt: user.UpdatedAt,
 		},
 	}

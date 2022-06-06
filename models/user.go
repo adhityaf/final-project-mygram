@@ -9,7 +9,7 @@ type User struct {
 	Email    string `gorm:"type:varchar(255);unique_index;not null" json:"email"`
 	Username string `gorm:"type:varchar(255);unique_index;not null" json:"username"`
 	Password string `gorm:"type:varchar(255);not null" json:"password"`
-	Age      uint    `gorm:"type:int(11);not null" json:"age"`
+	Age      int   `gorm:"size:11;not null" json:"age"`
 
 	// User Has Many Photos
 	// User can posts many photos

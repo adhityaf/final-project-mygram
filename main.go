@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// Initialize DB
-	db, err := database.ConnectDB("mysql")
+	db, err := database.ConnectDB(database.GoDotEnvVariable("DB_DRIVER"))
 	if err != nil {
 		fmt.Println("error :", err.Error())
 		return
@@ -30,7 +30,7 @@ func main() {
 	commentRepo := repositories.NewCommentRepo(db)
 	commentService := services.NewCommentService(commentRepo)
 	commentController := controllers.NewCommentController(commentService, photoService)
-	
+
 	socialMediaRepo := repositories.NewSocialMediaRepo(db)
 	socialMediaService := services.NewSocialMediaService(socialMediaRepo)
 	socialMediaController := controllers.NewSocialMediaController(socialMediaService)
@@ -77,5 +77,5 @@ func main() {
 		socialMediaRoute.DELETE("/:socialMediaId", socialMediaController.DeleteSocialMedia)
 	}
 
-	route.Run(database.APP_PORT)
+	route.Run(database.GoDotEnvVariable("APP_PORT"))
 }
