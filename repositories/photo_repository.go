@@ -4,6 +4,7 @@ import (
 	"final-project/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type PhotoRepo interface {
@@ -27,7 +28,7 @@ func NewPhotoRepo(db *gorm.DB) PhotoRepo {
 
 func (p *photoRepo) FindAll() (*[]models.Photo, error) {
 	var photos []models.Photo
-	err := p.db.Find(&photos).Error
+	err := p.db.Preload(clause.Associations).Find(&photos).Error
 	return &photos, err
 }
 

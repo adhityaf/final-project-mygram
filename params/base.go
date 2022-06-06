@@ -6,8 +6,6 @@ type Response struct {
 	Error               string      `json:"error,omitempty"`
 	AdditionalInfo      interface{} `json:"additional_info,omitempty"`
 	Data                interface{} `json:"data,omitempty"`
-	UserResponse        interface{} `json:"user_data,omitempty"`
-	SocialMediaResponse interface{} `json:"social_media_data,omitempty"`
 }
 
 type UserResponse struct {
@@ -21,11 +19,33 @@ type UserResponse struct {
 }
 
 type SocialMediaResponse struct {
-	ID             uint          `json:"id,omitempty"`
-	Name           string        `json:"name,omitempty"`
-	SocialMediaURL string        `json:"social_media_url,omitempty"`
-	UserID         uint          `json:"user_id,omitempty"`
-	CreatedAt      interface{}   `json:"created_at,omitempty"`
-	UpdatedAt      interface{}   `json:"updated_at,omitempty"`
-	User           UserResponse `json:"user,omitempty"`
+	ID             int         `json:"id,omitempty"`
+	Name           string      `json:"name,omitempty"`
+	SocialMediaURL string      `json:"social_media_url,omitempty"`
+	UserID         int         `json:"user_id,omitempty"`
+	CreatedAt      interface{} `json:"created_at,omitempty"`
+	UpdatedAt      interface{} `json:"updated_at,omitempty"`
+	User           interface{} `json:"User,omitempty"`
+}
+
+type PhotoResponse struct {
+	ID        int         `json:"id,omitempty"`
+	Title     string      `json:"title,omitempty"`
+	Caption   string      `json:"caption,omitempty"`
+	PhotoURL  string      `json:"photo_url,omitempty"`
+	UserID    int         `json:"user_id,omitempty"`
+	CreatedAt interface{} `json:"created_at,omitempty"`
+	UpdatedAt interface{} `json:"updated_at,omitempty"`
+	User      interface{} `json:"User,omitempty"`
+}
+
+type CommentResponse struct {
+	ID        int         `json:"id,omitempty"`
+	Message   string      `json:"message,omitempty"`
+	PhotoID   int         `json:"photo_id,omitempty"`
+	UserID    int         `json:"user_id,omitempty"`
+	UpdatedAt interface{} `json:"updated_at,omitempty"`
+	CreatedAt interface{} `json:"created_at,omitempty"`
+	User      interface{} `json:"User,omitempty"`
+	Photo     interface{} `json:"Photo,omitempty"`
 }

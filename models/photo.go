@@ -10,6 +10,7 @@ type Photo struct {
 
 	// Photo belongs to a user
 	UserID uint `gorm:"type:int;not null;" json:"user_id"`
+	User   User
 	// Photo Has Many Comments
 	// Photo can have many comments by many users
 	Comments []Comment `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

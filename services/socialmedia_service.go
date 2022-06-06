@@ -37,11 +37,11 @@ func (s *SocialMediaService) Create(request *params.CreateSocialMedia) *params.R
 	return &params.Response{
 		Status:  http.StatusCreated,
 		Message: "Success create new social media",
-		SocialMediaResponse: params.SocialMediaResponse{
-			ID:             socialMedia.ID,
+		Data: &params.SocialMediaResponse{
+			ID:             int(socialMedia.ID),
 			Name:           socialMedia.Name,
 			SocialMediaURL: socialMedia.SocialMediaURL,
-			UserID:         socialMedia.UserID,
+			UserID:         int(socialMedia.UserID),
 			CreatedAt:      socialMedia.CreatedAt,
 		},
 	}
@@ -67,10 +67,10 @@ func (s *SocialMediaService) FindAllByAuthId(authId uint) *params.Response {
 	var socialMediaResponses []params.SocialMediaResponse
 	for _, socialMedia := range *socialMedias {
 		socialMediaResponses = append(socialMediaResponses, params.SocialMediaResponse{
-			ID:             socialMedia.ID,
+			ID:             int(socialMedia.ID),
 			Name:           socialMedia.Name,
 			SocialMediaURL: socialMedia.SocialMediaURL,
-			UserID:         socialMedia.UserID,
+			UserID:         int(socialMedia.UserID),
 			CreatedAt:      socialMedia.CreatedAt,
 			UpdatedAt:      socialMedia.UpdatedAt,
 			User: params.UserResponse{
@@ -84,11 +84,11 @@ func (s *SocialMediaService) FindAllByAuthId(authId uint) *params.Response {
 	return &params.Response{
 		Status:              http.StatusOK,
 		Message:             "Success retrieve all data",
-		SocialMediaResponse: socialMediaResponses,
+		Data: socialMediaResponses,
 	}
 }
 
-func (s *SocialMediaService) Update(request params.UpdateSocialMedia) *params.Response {
+func (s *SocialMediaService) Update(request *params.UpdateSocialMedia) *params.Response {
 	socialMedia, err := s.socialMediaRepo.FindByIdAndAuthId(request.ID, request.UserID)
 	if err != nil {
 		return &params.Response{
@@ -113,11 +113,11 @@ func (s *SocialMediaService) Update(request params.UpdateSocialMedia) *params.Re
 	return &params.Response{
 		Status:  http.StatusOK,
 		Message: fmt.Sprintf("Update data social media with id %d success", request.ID),
-		SocialMediaResponse: params.SocialMediaResponse{
-			ID:             socialMedia.ID,
+		Data: &params.SocialMediaResponse{
+			ID:             int(socialMedia.ID),
 			Name:           socialMedia.Name,
 			SocialMediaURL: socialMedia.SocialMediaURL,
-			UserID:         socialMedia.UserID,
+			UserID:         int(socialMedia.UserID),
 			UpdatedAt:      socialMedia.UpdatedAt,
 		},
 	}
@@ -127,7 +127,7 @@ func (s *SocialMediaService) Delete(socialMediaId, authId uint) *params.Response
 	socialMedia, err := s.socialMediaRepo.FindByIdAndAuthId(socialMediaId, authId)
 	if err != nil {
 		return &params.Response{
-			Status:         http.StatusNotFound,
+			Status:         http.StatusUnauthorized,
 			Error:          "UNAUTHORIZED",
 			AdditionalInfo: "You can't delete this data",
 		}

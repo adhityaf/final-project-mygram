@@ -75,7 +75,7 @@ func (s *SocialMediaController) UpdateSocialMedia(ctx *gin.Context) {
 		return
 	}
 
-	response := s.socialMediaService.Update(request)
+	response := s.socialMediaService.Update(&request)
 	ctx.JSON(response.Status, response)
 }
 

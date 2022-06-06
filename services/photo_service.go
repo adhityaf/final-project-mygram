@@ -37,7 +37,14 @@ func (p *PhotoService) Create(request *params.CreatePhoto) *params.Response {
 	return &params.Response{
 		Status:  http.StatusCreated,
 		Message: "Success post a photo",
-		Data:    photo,
+		Data: &params.PhotoResponse{
+			ID:        int(photo.ID),
+			Title:     photo.Title,
+			Caption:   photo.Caption,
+			PhotoURL:  photo.PhotoURL,
+			UserID:    int(photo.UserID),
+			CreatedAt: photo.CreatedAt,
+		},
 	}
 }
 
@@ -58,16 +65,28 @@ func (p *PhotoService) FindAll() *params.Response {
 		}
 	}
 
+	var photoResponses []params.PhotoResponse
+	for _, photo := range *photos {
+		photoResponses = append(photoResponses, params.PhotoResponse{
+			ID:        int(photo.ID),
+			Title:     photo.Title,
+			Caption:   photo.Caption,
+			PhotoURL:  photo.PhotoURL,
+			UserID:    int(photo.UserID),
+			CreatedAt: photo.CreatedAt,
+			UpdatedAt: photo.UpdatedAt,
+			User: &params.UserResponse{
+				Email:    photo.User.Email,
+				Username: photo.User.Username,
+			},
+		})
+	}
+
 	return &params.Response{
 		Status:  http.StatusOK,
 		Message: "Success retrieve all data",
-		Data:    photos,
+		Data:    photoResponses,
 	}
-}
-
-func (p *PhotoService) IsPhotoExist(id uint) bool {
-	_, err := p.photoRepo.FindById(id)
-	return err == nil
 }
 
 func (p *PhotoService) Update(request *params.UpdatePhoto) *params.Response {
@@ -96,7 +115,14 @@ func (p *PhotoService) Update(request *params.UpdatePhoto) *params.Response {
 	return &params.Response{
 		Status:  http.StatusOK,
 		Message: "Your photo has been successfully updated",
-		Data:    photo,
+		Data: &params.PhotoResponse{
+			ID:        int(photo.ID),
+			Title:     photo.Title,
+			Caption:   photo.Caption,
+			PhotoURL:  photo.PhotoURL,
+			UserID:    int(photo.UserID),
+			UpdatedAt: photo.UpdatedAt,
+		},
 	}
 }
 
@@ -123,4 +149,9 @@ func (p *PhotoService) Delete(photoId, authId uint) *params.Response {
 		Status:  http.StatusOK,
 		Message: "Your photo has been successfully deleted",
 	}
+}
+
+func (p *PhotoService) IsPhotoExist(id uint) bool {
+	_, err := p.photoRepo.FindById(id)
+	return err == nil
 }

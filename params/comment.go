@@ -2,7 +2,7 @@ package params
 
 type CreateComment struct {
 	Message string `json:"message" valid:"required~Field Message is required"`
-	PhotoID int `json:"photo_id" valid:"required~Field Photo Id is required"`
+	PhotoID uint   `json:"photo_id"`
 	UserID  uint   `json:"user_id" valid:"required~Field User Id is required"`
 }
 

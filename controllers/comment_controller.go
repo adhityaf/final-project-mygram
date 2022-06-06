@@ -30,6 +30,11 @@ func (c *CommentController) CreateComment(ctx *gin.Context) {
 		return
 	}
 
+	if request.PhotoID == 0 {
+		helpers.ResponseStatusBadRequest(ctx, "Field Photo Id is required")
+		return
+	}
+
 	isPhotoExist := c.photoService.IsPhotoExist(uint(request.PhotoID))
 	if !isPhotoExist {
 		helpers.ResponseStatusNotFound(ctx)
@@ -80,7 +85,7 @@ func (c *CommentController) UpdateComment(ctx *gin.Context) {
 		return
 	}
 
-	response := c.commentService.Update(request)
+	response := c.commentService.Update(&request)
 	ctx.JSON(response.Status, response)
 }
 

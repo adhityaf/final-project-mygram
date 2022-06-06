@@ -57,8 +57,8 @@ func (u *UserService) Create(request *params.RegisterUser) *params.Response {
 	return &params.Response{
 		Status:  http.StatusCreated,
 		Message: "Register success",
-		UserResponse: params.UserResponse{
-			Age:      user.Age,
+		Data: params.UserResponse{
+			Age:      int(user.Age),
 			Email:    user.Email,
 			ID:       int(user.ID),
 			Username: user.Username,
@@ -90,7 +90,7 @@ func (u *UserService) Login(request *params.LoginUser) *params.Response {
 	return &params.Response{
 		Status:  http.StatusOK,
 		Message: "Login Success",
-		UserResponse: params.UserResponse{
+		Data: params.UserResponse{
 			Token: token,
 		},
 	}
@@ -121,11 +121,11 @@ func (u *UserService) Update(request *params.UpdateUser) *params.Response {
 	return &params.Response{
 		Status:  http.StatusOK,
 		Message: "Your account has been successfully updated",
-		UserResponse: params.UserResponse{
+		Data: params.UserResponse{
 			ID:        int(user.ID),
 			Email:     user.Email,
 			Username:  user.Username,
-			Age:       user.Age,
+			Age:       int(user.Age),
 			UpdatedAt: user.UpdatedAt,
 		},
 	}

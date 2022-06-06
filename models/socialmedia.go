@@ -9,7 +9,7 @@ type SocialMedia struct {
 
 	// SocialMedia belongs to a user
 	UserID uint `gorm:"type:int;not null;" json:"user_id"`
-	User   User
+	User   User `json:"omitempty"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
